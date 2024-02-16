@@ -1,5 +1,5 @@
 import jobsModel from "../models/jobsModel.js";
-
+import mongoose from "mongoose";
 //*******create jobs****** */
 export const createJobController = async (req, res, next) => {
   const { company, position } = req.body;
@@ -70,5 +70,68 @@ export const deleteJobController = async (req, res) => {
   await job.deleteOne();
   res.status(200).json({
     message: "Successfully deleted job",
+  });
+};
+
+export const bulkInsert = async (req, res) => {
+  try {
+    const job = await jobsModel.insertMany(req.body);
+
+    // await QuestionBank.deleteMany({});
+    res.json({
+      success: true,
+      message: "jobs added successfully",
+      data: job,
+      err: {},
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "jobs Not added ",
+      data: [],
+      err: error.message,
+    });
+  }
+};
+
+export const jobStatsController = async (req, res) => {
+  const stats = await jobsModel.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      },
+    },
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  //monthly yearly stats
+
+  let monthlyApplication = await jobsModel.aggregate([
+    {
+      $match: {
+        createdBy: new mongoose.Types.ObjectId(req.user.userId),
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
+        },
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    totalJobs: stats.length,
+    stats,
+    monthlyApplication,
   });
 };

@@ -1,9 +1,11 @@
 import { Router } from "express";
 import userAuth from "../middlewares/authMiddleware.js";
 import {
+  bulkInsert,
   createJobController,
   deleteJobController,
   getJobsController,
+  jobStatsController,
   updateJobController,
 } from "../controllers/jobsController.js";
 
@@ -18,3 +20,7 @@ export default router;
 router.patch("/update-job/:id", userAuth, updateJobController);
 
 router.delete("/delete-job/:id", userAuth, deleteJobController);
+
+router.get("/job-stats", userAuth, jobStatsController);
+
+router.post("/bulk", userAuth, bulkInsert);
