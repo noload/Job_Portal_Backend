@@ -21,9 +21,11 @@ import authRoute from "./routes/authRoutes.js";
 import userRoute from "./routes/userRoutes.js";
 import jobsRoute from "./routes/jobsRoutes.js";
 
-//mongo db connection
 const app = express();
-
+app.get("/", (req, res) => {
+  res.send("Welcome to Job Portal");
+});
+//swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //middleware
 app.use(helmet());
