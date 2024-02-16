@@ -5,6 +5,11 @@ import colors from "colors";
 import morgan from "morgan";
 import cors from "cors";
 import "express-async-errors";
+//security package
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import { rateLimit } from "express-rate-limit";
+
 //file imports
 import { PORT } from "./config/serverConfig.js";
 import connectDB from "./config/db.js";
@@ -19,6 +24,8 @@ import jobsRoute from "./routes/jobsRoutes.js";
 const app = express();
 
 //middleware
+app.use(helmet());
+app.use(mongoSanitize());
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
