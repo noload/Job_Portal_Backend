@@ -9,8 +9,12 @@ import "express-async-errors";
 import { PORT } from "./config/serverConfig.js";
 import connectDB from "./config/db.js";
 dotenv.config();
-import authRoute from "./routes/authRoutes.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
+//routes import
+import authRoute from "./routes/authRoutes.js";
+import userRoute from "./routes/userRoutes.js";
+import jobsRoute from "./routes/jobsRoutes.js";
+
 //mongo db connection
 const app = express();
 
@@ -20,6 +24,8 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/job", jobsRoute);
 
 //validation middleware
 app.use(errorMiddleware);
