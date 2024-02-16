@@ -10,7 +10,8 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:8080", // Change the URL as needed
+        // url: "http://localhost:8080", // Change the URL as needed
+        url: "https://job-portal-backend-wcst.onrender.com/"
         description: "Local development server",
       },
       // Add additional server details as needed
