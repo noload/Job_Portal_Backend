@@ -1,14 +1,15 @@
 //packages imports
 import express from "express";
 import dotenv from "dotenv";
-import colors from "colors";
 import morgan from "morgan";
 import cors from "cors";
 import "express-async-errors";
 //security package
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
-import { rateLimit } from "express-rate-limit";
+//swagger import
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swaggerConfig.js";
 
 //file imports
 import { PORT } from "./config/serverConfig.js";
@@ -23,6 +24,7 @@ import jobsRoute from "./routes/jobsRoutes.js";
 //mongo db connection
 const app = express();
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 //middleware
 app.use(helmet());
 app.use(mongoSanitize());
@@ -38,6 +40,5 @@ app.use("/api/v1/job", jobsRoute);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`server started on port ${PORT}`.rainbow);
   connectDB();
 });
