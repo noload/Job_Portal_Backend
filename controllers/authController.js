@@ -64,5 +64,6 @@ export const loginController = async (req, res, next) => {
     success: true,
     message: "Logen successfully",
     token,
+    user,
   });
 };
