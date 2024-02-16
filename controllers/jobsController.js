@@ -14,7 +14,42 @@ export const createJobController = async (req, res, next) => {
 };
 /********Get  Jobs***** */
 export const getJobsController = async (req, res, next) => {
-  const jobs = await jobsModel.find({ createdBy: req.user.userId });
+  // const jobs = await jobsModel.find({ createdBy: req.user.userId });
+  const { status, workType, search, sort } = req.query;
+  //condition for searching
+  const queryObject = {
+    createdBy: req.user.userId,
+  };
+
+  //logic for filter
+  if (status && status != "all") {
+    queryObject.status = status;
+  }
+  if (workType && workType != "all") {
+    queryObject.workType = workType;
+  }
+  if (search) {
+    queryObject.position = { $regex: search, $options: "i" };
+  }
+
+  let queryResult = jobsModel.find(queryObject);
+  //sorting logic
+  if (sort === "latest") {
+    queryResult = queryResult.sort("-createdAt");
+  }
+
+  if (sort === "oldest") {
+    queryResult = queryResult.sort("createdAt");
+  }
+  if (sort === "a-z") {
+    queryResult = queryResult.sort("position");
+  }
+  if (sort === "A-Z") {
+    queryResult = queryResult.sort("-position");
+  }
+
+  const jobs = await queryResult;
+
   res.status(200).json({
     totalJobs: jobs.length,
     jobs,
@@ -66,8 +101,8 @@ export const deleteJobController = async (req, res) => {
     next("You are not authorized to delete this job");
     return;
   }
-
   await job.deleteOne();
+
   res.status(200).json({
     message: "Successfully deleted job",
   });
